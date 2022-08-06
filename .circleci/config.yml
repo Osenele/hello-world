@@ -44,15 +44,43 @@ jobs:
     - run:
         name: "Print My Environment Variable"
         command: "echo $my_env_var"
+
+  save_hello_world_output:
+    docker:
+      - image: cimg/base:stable
+    steps:
+    - checkout
+    - run:
+        name: "Save Hello World Output"
+        command: "echo "text to output here" > output.txt"
+    - persist_to_workspace:
+        root: /tmp/dir
+        paths:
+          - output.txt
+  
+  print_output_file:
+    docker:
+      - image: cimg/base:stable
+    steps:
+    - checkout
+    - attach_workspace:
+        at: /tmp/workspace
+    - run:
+        name: "Print Output File"
+        command: "cat output.txt"
         
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   say-hello-workflow:
     jobs:
-      - say-hello
-      - print_hello
-      - print_world:
+      #- say-hello
+      #- print_hello
+      #- print_world:
+      #    requires:
+      #      - print_hello
+      #- print_my_env_var
+      - save_hello_world_output
+      - print_output_file:
           requires:
-            - print_hello
-      - print_my_env_var
+            - save_hello_world_output
