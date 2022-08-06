@@ -42,7 +42,7 @@ jobs:
     steps:
     - checkout
     - run:
-        name: ""Print My Environment Variable"
+        name: "Print My Environment Variable"
         command: "echo $my_env_var"
         
 # Invoke jobs via workflows
